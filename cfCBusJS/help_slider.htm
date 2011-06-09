@@ -1,0 +1,19 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><body><font face='arial' size='2'>
+<ul>
+    <li>
+        Create a <b>slider</b> object, and assign it an analog join equal to the configured base join + the <i>decimal</i> 
+        C-Bus group ID. eg. If you configured a base join of 1000, and you're wanting to control group 15, you'd use 
+        join 1015.
+    </li>
+    <li>
+        Assign the appropriate command to the <b>release</b> parameter of the slider (if you drag and drop the
+        command onto the slider it will assign itself to the <b>drag</b> parameter, and this will cause excessive
+        traffic on the C-Bus network.
+    </li>
+    <li>
+        Enable simulated feedback on the slider.
+    </li>
+
+</ul>
+</font></body></html>

@@ -1,0 +1,18 @@
+C:\Source\Code\personal\projects\cfCBus\bin\debug\cfCbus.dll.config
+C:\Source\Code\personal\projects\cfCBus\bin\debug\cfCbus.dll
+C:\Source\Code\personal\projects\cfCBus\bin\debug\cfCbus.pdb
+C:\Source\Code\personal\projects\cfCBus\bin\debug\cfCbus.xml
+C:\Source\Code\personal\projects\cfCBus\bin\debug\CFPlugin.dll
+C:\Source\Code\personal\projects\cfCBus\obj\Debug\ResolveAssemblyReference.cache
+C:\Source\Code\personal\projects\cfCBus\obj\Debug\cfCbus.MsgDialog.resources
+C:\Source\Code\personal\projects\cfCBus\obj\Debug\cfCbus.frmMain.resources
+C:\Source\Code\personal\projects\cfCBus\obj\Debug\cfCbus.Resources.resources
+C:\Source\Code\personal\projects\cfCBus\obj\Debug\GenerateResource-ResGen.read.1.tlog
+C:\Source\Code\personal\projects\cfCBus\obj\Debug\GenerateResource-ResGen.write.1.tlog
+C:\Source\Code\personal\projects\cfCBus\obj\Debug\cfCbus.dll
+C:\Source\Code\personal\projects\cfCBus\obj\Debug\cfCbus.xml
+C:\Source\Code\personal\projects\cfCBus\obj\Debug\cfCbus.pdb
+C:\Program Files\CommandFusion\plugins\cfCbus.dll.config
+C:\Program Files\CommandFusion\plugins\cfCbus.dll
+C:\Program Files\CommandFusion\plugins\cfCbus.pdb
+C:\Program Files\CommandFusion\plugins\cfCbus.xml
