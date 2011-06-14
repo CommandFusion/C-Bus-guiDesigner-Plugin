@@ -831,7 +831,7 @@ Public Class frmMain
 
     Sub go()
         ' Add commands to the selected system
-        Dim sysSelect As SystemClass
+        Dim sysSelect As SystemClass = Nothing
         Try
             Try
                 If Not IsNumeric(tbJoin56.Text) Or Not IsNumeric(tbJoin202.Text) Then

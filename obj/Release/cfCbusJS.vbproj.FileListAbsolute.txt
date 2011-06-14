@@ -1,0 +1,15 @@
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\obj\Release\ResolveAssemblyReference.cache
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\obj\Release\cfCbBusJS.config.resources
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\obj\Release\cfCbBusJS.MsgDialog.resources
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\obj\Release\cfCbBusJS.frmMain.resources
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\obj\Release\cfCbBusJS.help.resources
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\obj\Release\cfCbBusJS.Resources.resources
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\obj\Release\cfCbusJS.vbproj.GenerateResource.Cache
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\bin\Release\cfCBusJS.dll.config
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\bin\Release\cfCBusJS.dll
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\bin\Release\cfCBusJS.pdb
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\bin\Release\cfCBusJS.xml
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\bin\Release\CFPlugin.dll
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\obj\Release\cfCBusJS.dll
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\obj\Release\cfCBusJS.xml
+C:\Work\GuiLink\Products\CommandFusion\GitHub\CBus guiDesigner Plugin\obj\Release\cfCBusJS.pdb
