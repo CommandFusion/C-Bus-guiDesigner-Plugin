@@ -1,0 +1,6 @@
+/bin/debug/
+/bin/Release/cfCBusJS.dll.config
+/bin/Release/cfCBusJS.pdb
+/bin/Release/cfCBusJS.xml
+/bin/Release/CFPlugin.dll
+/obj/

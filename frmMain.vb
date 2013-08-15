@@ -7,7 +7,7 @@ Public Class frmMain
 #Region " Declarations "
     Implements CFPlugin
 
-    Private systemList As New List(Of SystemClass)
+    Private systemList As New List(Of JSONSystem)
     Private macroList As New List(Of SystemMacro)
     Private xmlConfig As Xmlconfig
     Private WithEvents xmlView As New CustomControls.TriStateTreeView
@@ -54,8 +54,8 @@ Public Class frmMain
     Public Event AddFeedback(ByVal sender As CommandFusion.CFPlugin, ByVal newFB As CommandFusion.SystemFeedback) Implements CommandFusion.CFPlugin.AddFeedback
     Public Event AddMacro(ByVal sender As CommandFusion.CFPlugin, ByVal newMacro As CommandFusion.SystemMacro) Implements CommandFusion.CFPlugin.AddMacro
     Public Event AddMacros(ByVal sender As CommandFusion.CFPlugin, ByVal newMacros As System.Collections.Generic.List(Of CommandFusion.SystemMacro)) Implements CommandFusion.CFPlugin.AddMacros
-    Public Event AddSystem(ByVal sender As CommandFusion.CFPlugin, ByVal newSystem As CommandFusion.SystemClass) Implements CommandFusion.CFPlugin.AddSystem
-    Public Event AppendSystem(ByVal sender As CommandFusion.CFPlugin, ByVal newSystem As CommandFusion.SystemClass) Implements CommandFusion.CFPlugin.AppendSystem
+    Public Event AddSystem(ByVal sender As CommandFusion.CFPlugin, ByVal newSystem As CommandFusion.JSONSystem) Implements CommandFusion.CFPlugin.AddSystem
+    Public Event AppendSystem(ByVal sender As CommandFusion.CFPlugin, ByVal newSystem As CommandFusion.JSONSystem) Implements CommandFusion.CFPlugin.AppendSystem
     Public Event RequestSystemList(ByVal sender As CommandFusion.CFPlugin) Implements CommandFusion.CFPlugin.RequestSystemList
     Public Event ToggleWindow(ByVal sender As CommandFusion.CFPlugin) Implements CommandFusion.CFPlugin.ToggleWindow
     Public Event RequestMacroList(ByVal sender As CFPlugin) Implements CommandFusion.CFPlugin.RequestMacroList
@@ -163,7 +163,7 @@ Public Class frmMain
         macroList = theMacroList
     End Sub
 
-    Public Sub UpdateSystemList(ByVal theSystemList As System.Collections.Generic.List(Of CommandFusion.SystemClass)) Implements CommandFusion.CFPlugin.UpdateSystemList
+    Public Sub UpdateSystemList(ByVal theSystemList As System.Collections.Generic.List(Of CommandFusion.JSONSystem), ByVal systemTypes As System.Collections.Generic.List(Of CommandFusion.JSONSystem)) Implements CommandFusion.CFPlugin.UpdateSystemList
         If bDebug Then MsgBox("Updating System List")
         Dim i As Integer = 0
         Dim iSystem As Integer = -1
@@ -172,8 +172,8 @@ Public Class frmMain
             cboSystems.Items.Clear()
             If Not theSystemList Is Nothing Then
                 systemList = theSystemList
-                For Each aSystem As SystemClass In systemList
-                    If Not aSystem.IPAddress = "127.0.0.1" And Not aSystem.IPAddress = "255.255.255.255" Then
+                For Each aSystem As JSONSystem In systemList
+                    If Not aSystem.GetSetting("ip").Value = "127.0.0.1" And Not aSystem.GetSetting("ip").Value = "255.255.255.255" Then
                         cboSystems.Items.Add(aSystem.Name)
                         If aSystem.Name = configGet(_XML_selectedSystem) Then iSystem = i
                         i += 1
@@ -335,9 +335,9 @@ Public Class frmMain
 #End Region
 
 #Region " guiD API Exensions "
-    Function GetSystemByName(ByVal sName As String) As SystemClass
-        Dim ret As New SystemClass
-        For Each sys As SystemClass In systemList
+    Function GetSystemByName(ByVal sName As String) As JSONSystem
+        Dim ret As New JSONSystem
+        For Each sys As JSONSystem In systemList
             If sys.Name = sName Then
                 ret = sys
                 Exit For
@@ -346,11 +346,11 @@ Public Class frmMain
         Return ret
     End Function
 
-    Function GetSystemByIP(ByVal sIpAddress As String) As SystemClass
-        Dim ret As New SystemClass
+    Function GetSystemByIP(ByVal sIpAddress As String) As JSONSystem
+        Dim ret As New JSONSystem
         Try
-            For Each sys As SystemClass In systemList
-                If sys.IPAddress = sIpAddress Then
+            For Each sys As JSONSystem In systemList
+                If sys.GetSetting("ip").Value = sIpAddress Then
                     ret = sys
                     Exit For
                 End If
@@ -361,13 +361,13 @@ Public Class frmMain
         Return ret
     End Function
 
-    Function AddNewCommand(ByVal theSystem As SystemClass, ByVal sName As String, Optional ByVal sValue As String = "", Optional ByVal sJavascript As String = "", Optional ByVal bAutoOverwrite As Boolean = False) As CommandFusion.SystemCommand
+    Function AddNewCommand(ByVal theSystem As JSONSystem, ByVal sName As String, Optional ByVal sValue As String = "", Optional ByVal sJavascript As String = "", Optional ByVal bAutoOverwrite As Boolean = False) As CommandFusion.SystemCommand
         Dim cmd As SystemCommand
         cmd = New SystemCommand
         cmd.Name = sName
         cmd.Value = sValue
         cmd.Script = sJavascript
-        cmd.System = theSystem
+        cmd.System = theSystem.Name
 
         Dim cmdExisting As SystemCommand
         Dim bCmdExists As Boolean
@@ -443,7 +443,7 @@ Public Class frmMain
         Return macro
     End Function
 
-    Function AddNewFb(ByVal theSystem As SystemClass, ByVal sFbName As String, ByVal sFbValue As String) As SystemFeedback
+    Function AddNewFb(ByVal theSystem As JSONSystem, ByVal sFbName As String, ByVal sFbValue As String) As SystemFeedback
         Dim fb As SystemFeedback
         Dim bFbExists As Boolean
 
@@ -453,13 +453,14 @@ Public Class frmMain
 
         fb.Name = sFbName
         fb.Value = sFbValue
+        fb.System = theSystem.Name
 
         If Not bFbExists Then theSystem.Feedback.Add(fb)
 
         Return fb
     End Function
 
-    Sub AddNewFbMatch(ByVal theSystem As SystemClass, ByVal sFbName As String, ByVal cmd As SystemCommand, ByVal mac As SystemMacro)
+    Sub AddNewFbMatch(ByVal theSystem As JSONSystem, ByVal sFbName As String, ByVal cmd As SystemCommand, ByVal mac As SystemMacro)
         Dim fb As SystemFeedback
         Dim fbM As New SystemFeedbackMatchElement
         Dim bElementExists As Boolean = False
@@ -502,7 +503,7 @@ Public Class frmMain
 
     End Sub
 
-    Sub AddNewFbToken(ByVal theSystem As SystemClass, ByVal sFbName As String, ByVal sFbElemName As String, ByVal iCaptureIndex As Integer, _
+    Sub AddNewFbToken(ByVal theSystem As JSONSystem, ByVal sFbName As String, ByVal sFbElemName As String, ByVal iCaptureIndex As Integer, _
         ByVal DataType As Char, ByVal targetType As Char)
         Dim fb As SystemFeedback
         Dim fbE As New SystemFeedbackElement
@@ -538,7 +539,7 @@ Public Class frmMain
 
     End Sub
 
-    Sub AddNewFbJoin(ByVal theSystem As SystemClass, ByVal sFbName As String, ByVal sFbElemName As String, ByVal iCaptureIndex As Integer, ByVal iJoin As Integer, _
+    Sub AddNewFbJoin(ByVal theSystem As JSONSystem, ByVal sFbName As String, ByVal sFbElemName As String, ByVal iCaptureIndex As Integer, ByVal iJoin As Integer, _
         ByVal DataType As Char, ByVal targetType As Char, Optional ByVal tokenType As CommandFusion.SystemFeedbackElement.TokenTypes = SystemFeedbackElement.TokenTypes.Value, _
         Optional ByVal transform As String = Nothing, Optional ByVal hexType As CommandFusion.SystemFeedbackElement.HexModes = SystemFeedbackElement.HexModes.NonHex, _
         Optional ByVal max As String = Nothing, Optional ByVal min As String = Nothing, Optional ByVal onVal As String = Nothing, Optional ByVal offVal As String = Nothing)
@@ -795,7 +796,7 @@ Public Class frmMain
     Dim bSkipCmd As Boolean
     Shared bManualRefresh As Boolean = False
 
-    Dim sysBroadcast As SystemClass
+    Dim sysBroadcast As JSONSystem
 
     Sub CheckBroadcastSystem()
         Try
@@ -803,18 +804,18 @@ Public Class frmMain
             If sysBroadcast.Name = "New System" Then
                 'sysBroadcast = New SystemClass
                 sysBroadcast.Name = "broadcast"
-                sysBroadcast.IPAddress = "255.255.255.255"
-                sysBroadcast.PortOrigin = "2048"
-                sysBroadcast.PortDestination = "2048"
-                sysBroadcast.AlwaysOn = True
-                sysBroadcast.Protocol = "udp"
+                sysBroadcast.GetSetting("ip").Value = "255.255.255.255"
+                sysBroadcast.GetSetting("port").Value = "2048"
+                sysBroadcast.GetSetting("origin").Value = "2048"
+                sysBroadcast.GetSetting("alwayson").Value = True
+
                 'systemList.Add(sysBroadcast)
                 RaiseEvent AddSystem(Me, sysBroadcast)
                 RaiseEvent RequestSystemList(Me)
             Else
-                If Not sysBroadcast.PortOrigin = sysBroadcast.PortDestination Or _
-                    Not sysBroadcast.AlwaysOn = True Or _
-                    Not sysBroadcast.Protocol = "udp" Then
+                If Not sysBroadcast.GetSetting("port").Value = sysBroadcast.GetSetting("origin").Value Or _
+                    Not sysBroadcast.GetSetting("alwayson").Value = True Or _
+                    Not sysBroadcast.ID = "udp-socket" Then
                     'If MsgBox("A broadcast system was found (" & sysBroadcast.Name & "), but for this to function correctly origin & destination ports must match, always on must be selected, and it must use the UDP protocol." & vbCrLf & vbCrLf & "Can I make these changes now?", 36, "Broadcast System Found - Incorrect Settings") = vbYes Then
                     '    sysBroadcast.PortDestination = sysBroadcast.PortOrigin
                     '    sysBroadcast.AlwaysOn = True
@@ -831,7 +832,7 @@ Public Class frmMain
 
     Sub go()
         ' Add commands to the selected system
-        Dim sysSelect As SystemClass = Nothing
+        Dim sysSelect As JSONSystem = Nothing
         Try
             Try
                 If Not IsNumeric(tbJoin56.Text) Or Not IsNumeric(tbJoin202.Text) Then
@@ -897,7 +898,7 @@ Public Class frmMain
         End Try
     End Sub
 
-    Sub doNodes(ByVal sysSelect As SystemClass, ByVal parentNode As TreeNode)
+    Sub doNodes(ByVal sysSelect As JSONSystem, ByVal parentNode As TreeNode)
         For Each node As TreeNode In parentNode.Nodes
             If node.Checked Then
                 If node.Name.StartsWith("grp_254_56_") Then
@@ -928,7 +929,7 @@ Public Class frmMain
         Next
     End Sub
 
-    Sub AddSceneCommands(ByVal theSystem As SystemClass, ByVal sProject As String, ByVal iNetwork As Integer, ByVal iApp As Integer, ByVal iGroup As Integer, ByVal sGroup As String, ByVal iActionSelector As Integer, ByVal sActionSelector As String)
+    Sub AddSceneCommands(ByVal theSystem As JSONSystem, ByVal sProject As String, ByVal iNetwork As Integer, ByVal iApp As Integer, ByVal iGroup As Integer, ByVal sGroup As String, ByVal iActionSelector As Integer, ByVal sActionSelector As String)
         If iApp = 202 Then
             Dim sEOL As String = "\x0D"
             'Commands
@@ -944,7 +945,7 @@ Public Class frmMain
         End If
     End Sub
 
-    Sub AddLightingCommands(ByVal theSystem As SystemClass, ByVal sProject As String, ByVal iNetwork As Integer, ByVal iApp As Integer, ByVal iGroup As Integer, ByVal sGroup As String)
+    Sub AddLightingCommands(ByVal theSystem As JSONSystem, ByVal sProject As String, ByVal iNetwork As Integer, ByVal iApp As Integer, ByVal iGroup As Integer, ByVal sGroup As String)
         If iApp = 56 Then
             Dim sEOL As String = "\x0D"
 
